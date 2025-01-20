@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from "@/components/redux/hooks";
 import {
     getCurrentBoardName,
     openAddAndEditBoardModal,
+    openAddAndEditTaskModal,
+    openDeleteBoardAndTaskModal,
 } from "@/components/redux/features/appSlice";
 import { MdEdit, MdDelete } from "react-icons/md";
 
@@ -69,7 +71,7 @@ export default function BoardTasks() {
                                         {tasks &&
                                             // Display the tasks if there are tasks in the column, if not, display an empty column
                                             (tasks.length > 0 ? (
-                                                tasks.map((task) => {
+                                                tasks.map((task, index) => {
                                                     const { id, title, status } = task;
 
                                                     return (
@@ -78,8 +80,37 @@ export default function BoardTasks() {
                                                             className='bg-white p-6 rounded-md mt-6 flex items-center justify-between border'>
                                                             <p>{title}</p>
                                                             <div className='flex items-center space-x-1'>
-                                                                <MdEdit className='text-lg cursor-pointer' />
-                                                                <MdDelete className='text-lg cursor-pointer text-red-500' />
+                                                                <MdEdit
+                                                                    onClick={() =>
+                                                                        dispatch(
+                                                                            openAddAndEditTaskModal(
+                                                                                {
+                                                                                    variant:
+                                                                                        "Edit Task",
+                                                                                    title,
+                                                                                    index,
+                                                                                    name,
+                                                                                }
+                                                                            )
+                                                                        )
+                                                                    }
+                                                                    className='text-lg cursor-pointer'
+                                                                />
+                                                                <MdDelete
+                                                                    onClick={() =>
+                                                                        dispatch(
+                                                                            openDeleteBoardAndTaskModal(
+                                                                                {
+                                                                                    variant:
+                                                                                        "Delete this Task?",
+                                                                                    status,
+                                                                                    index,
+                                                                                }
+                                                                            )
+                                                                        )
+                                                                    }
+                                                                    className='text-lg cursor-pointer text-red-500'
+                                                                />
                                                             </div>
                                                         </div>
                                                     );
