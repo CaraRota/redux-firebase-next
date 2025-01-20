@@ -15,41 +15,39 @@ export default function Home() {
     // Manage user details in this state. Key index in TypeScript ensures type safety.
     const [userDetails, setUserDetails] = useState<{ [key: string]: any }>();
 
-    // Get user session using getSession. Contains user's name and email, then passed to user details state.
-    const getUserSession = async () => {
-        const session = await getSession();
-        if (session) {
-            setUserDetails(session.user);
-        }
-    };
-
-    const handleAddDoc = async () => {
-        if (userDetails) {
-            // Execute code inside curly braces only when `userDetails` is true.
-
-            // Reference to the document with the user's email to check its existence in the database.
-            const docRef = collection(db, "users", userDetails.email, "tasks");
-            const getDos = await getDocs(docRef);
-
-            // If the document exists, terminate the program.
-            if (getDos.docs.length > 0) {
-                return;
-            } else {
-                // If not, submit a new document containing the data from data.json for the user in the database.
-                try {
-                    await addDoc(collection(db, "users", userDetails.email, "tasks"), data);
-                } catch (e) {
-                    console.error("Error adding document: ", e);
-                }
-            }
-        }
-    };
-
     useEffect(() => {
+        // Get user session using getSession. Contains user's name and email, then passed to user details state.
+        const getUserSession = async () => {
+            const session = await getSession();
+            if (session) {
+                setUserDetails(session.user);
+            }
+        };
         getUserSession(); // Call getUserSession function after the page renders.
     }, []);
 
     useEffect(() => {
+        const handleAddDoc = async () => {
+            if (userDetails) {
+                // Execute code inside curly braces only when `userDetails` is true.
+
+                // Reference to the document with the user's email to check its existence in the database.
+                const docRef = collection(db, "users", userDetails.email, "tasks");
+                const getDos = await getDocs(docRef);
+
+                // If the document exists, terminate the program.
+                if (getDos.docs.length > 0) {
+                    return;
+                } else {
+                    // If not, submit a new document containing the data from data.json for the user in the database.
+                    try {
+                        await addDoc(collection(db, "users", userDetails.email, "tasks"), data);
+                    } catch (e) {
+                        console.error("Error adding document: ", e);
+                    }
+                }
+            }
+        };
         handleAddDoc(); // Call handleAddDoc function after the user details update.
     }, [userDetails]);
 
